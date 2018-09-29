@@ -15,7 +15,7 @@ class EnemyStep {
     fun step(state: GameState) {
         this.state = state
         if (state.viruses.size == 0) {
-            spwanVirus()
+            spwanVirus(2)
         }
         val step = 1 / 3F // step per second
         val killed = arrayListOf<Virus>()
@@ -38,19 +38,28 @@ class EnemyStep {
             }
         }
         state.viruses.removeAll(killed)
-        for (i in 0 until killed.size) {
-            spwanVirus()
+        val lines = Array(state.size()) { it }.toMutableList().apply { shuffle() }
+
+        if (killed.isNotEmpty()) {
+            for (i in 0..Math.min(lines.size - 1, killed.size)) {
+                spwanVirus(lines[i])
+            }
         }
     }
 
-    private fun spwanVirus() {
-        state.viruses.add(newVirus())
+    fun spwanVirus(line: Int) {
+        state.viruses.add(newVirus(line))
     }
+
+    fun spwanVirus() {
+        spwanVirus(state.lines.random().i)
+    }
+
 
     private fun deltaTime() = Gdx.graphics.deltaTime
 
-    private fun newVirus(): Virus {
-        val line = state.lines.random()
+    private fun newVirus(lineNumber: Int): Virus {
+        val line = state.lines[lineNumber]
         val i = 0
         val a = GridPoint(i, line)
         val b = GridPoint(i, line)

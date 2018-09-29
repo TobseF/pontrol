@@ -28,7 +28,7 @@ class MyGdxGame : ApplicationAdapter() {
         line.hackPoints.add(GameState.HackPoint(5, line))
         renderer = GameStateRender(state)
         enemy = EnemyStep()
-        input = InputHandler(state)
+        input = InputHandler(state, enemy)
     }
 
     override fun render() {

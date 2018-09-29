@@ -5,15 +5,23 @@ import com.badlogic.gdx.InputAdapter
 import com.mygdx.game.GameState
 
 
-class InputHandler(val state: GameState) {
+class InputHandler(val state: GameState, val enemyStep: EnemyStep) {
 
     val maxTouchDistance = 15
 
     init {
         Gdx.input.inputProcessor = object : InputAdapter() {
+
+            override fun keyTyped(character: Char): Boolean {
+                if (character == 'v') {
+                    enemyStep.spwanVirus()
+                }
+                return true
+            }
+
             override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
 
-                var height = Gdx.graphics.height
+                val height = Gdx.graphics.height
                 val lineGap = height / state.size()
                 val lineGapHalf = lineGap / 2
                 val line = (state.size() - 1) - (y / lineGap)
@@ -22,11 +30,11 @@ class InputHandler(val state: GameState) {
                     deltaY -= lineGapHalf
                 }
 
-                val poinGap = RenderOptions.pointRaster.toInt()
-                val poinGapHalf = (RenderOptions.pointRaster / 2).toInt()
+                val pointGap = RenderOptions.pointRaster.toInt()
+                val pointGapHalf = (RenderOptions.pointRaster / 2).toInt()
 
-                var deltaX = Math.abs(Math.floorMod((x), poinGap) - poinGapHalf)
-                val point = (x / poinGap)
+                var deltaX = Math.abs(Math.floorMod((x), pointGap) - pointGapHalf)
+                val point = (x / pointGap)
                 if (deltaX > lineGapHalf) {
                     deltaX -= lineGapHalf
                 }
@@ -63,6 +71,7 @@ class InputHandler(val state: GameState) {
 
     private fun selectLine(existing: GameState.HackPoint) {
         if (existing.seleced) {
+            state.selectedLine?.seleced = false
             state.selectedLine = null
         } else if (state.selectedLine != null) {
             state.connections.add(GameState.Connection(state.selectedLine!!, existing))
@@ -71,7 +80,6 @@ class InputHandler(val state: GameState) {
         } else {
             state.selectedLine = existing
             existing.seleced = true
-            existing.alliance = GameState.Alliance.Neutral
         }
     }
 

@@ -1,7 +1,6 @@
 package com.mygdx.game
 
-import com.mygdx.game.GameState.Alliance.Neutral
-import com.mygdx.game.GameState.HackPoint.State.Free
+import com.mygdx.game.GameState.HackPoint.State.Blocked
 
 class GameState {
     var lives = 0
@@ -18,7 +17,8 @@ class GameState {
         lines = Array(5, { BaseLine(it) })
     }
 
-    enum class Alliance { Red, Blue, Green, Neutral;
+    enum class Alliance { Red, Blue, Green;
+
 
         fun next(): Alliance {
             val index = if (ordinal + 1 > Alliance.values().size - 1) 0 else ordinal + 1
@@ -57,10 +57,10 @@ class GameState {
 
     class Connection(var a: HackPoint, var b: HackPoint)
 
-    class HackPoint(i: Int, line: BaseLine, var state: State = Free, var alliance: Alliance = Neutral) : GridPoint(i, line) {
+    class HackPoint(i: Int, line: BaseLine, var state: State = Blocked, var alliance: Alliance = Alliance.Green) : GridPoint(i, line) {
         var seleced = false
 
-        enum class State { Free, Blocked, Line, Change;
+        enum class State { Blocked, Change, Line;
 
             fun next(): State {
                 val index = if (ordinal + 1 > State.values().size - 1) 0 else ordinal + 1
