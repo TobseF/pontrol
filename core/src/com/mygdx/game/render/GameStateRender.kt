@@ -38,7 +38,7 @@ class GameStateRender(val state: GameState) {
         }
         for (virus in state.viruses) {
             renderer.color = virus.alliance.toColor()
-            var x = virus.current.i * pointRaster
+            var x = (virus.current.i * pointRaster) - (pointRaster / 2)
             var y = virus.current.line.i * lineGap + (lineGap / 2)
             x += virus.stepProgress * pointRaster
             renderCircle(x, y, 12F)
@@ -82,7 +82,7 @@ class GameStateRender(val state: GameState) {
     private fun drawHackPoint(hackPoint: GameState.HackPoint, y: Float) {
         val x = (pointRaster * hackPoint.i) + (pointRaster / 2)
         val radius = 8F
-        renderer.color = hackPoint.alliance.toColor()
+        renderer.color = GameColor.neutral
         when (hackPoint.state) {
             Free -> {
                 renderCircle(x, y, radius)
@@ -92,8 +92,14 @@ class GameStateRender(val state: GameState) {
                 renderHackPointLine(x, y)
             }
             Change -> {
+                renderer.color = hackPoint.alliance.toColor()
                 renderHackPointChange(x, y)
             }
+            Blocked -> {
+                renderer.color = hackPoint.alliance.toColor()
+                renderBlocked(x, y)
+            }
+
         }
 
     }
@@ -114,6 +120,14 @@ class GameStateRender(val state: GameState) {
         val side = 26F
         val dY = side / 2
         renderer.rect(state.position + x, y - dY - 6, 0f, 0F, side, side, 1F, 1F, 45F)
+    }
+
+    fun renderBlocked(x: Float, y: Float) {
+        val height = 28F
+        val width = 28F
+        val dX = width / 2
+        val dY = height / 2
+        renderer.rect(state.position + x - dX, y - dY, width, height)
     }
 
 }

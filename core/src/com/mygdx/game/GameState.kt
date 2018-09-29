@@ -26,7 +26,7 @@ class GameState {
         }
     }
 
-    data class Virus(val alliance: Alliance, val current: GridPoint, val next: GridPoint) {
+    data class Virus(var alliance: Alliance, val current: GridPoint, val next: GridPoint) {
         var stepProgress = 0F
         val visited = arrayListOf<GridPoint>()
 
@@ -37,7 +37,7 @@ class GameState {
         override fun toString() = "($current-$next):$alliance"
     }
 
-    open class GridPoint(val i: Int = 0, val line: BaseLine) {
+    open class GridPoint(var i: Int = 0, val line: BaseLine) {
         fun getHackPoint(): HackPoint? {
             return line.getHackPoint(i)
         }
