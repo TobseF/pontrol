@@ -17,7 +17,7 @@ class InputHandler(val state: GameState) {
                 val lineGap = height / state.size()
                 val lineGapHalf = lineGap / 2
                 val line = (state.size() - 1) - (y / lineGap)
-                var deltaY = Math.abs(Math.floorMod((y), lineGap) - lineGapHalf)
+                var deltaY = Math.abs(Math.floorMod(y, lineGap) - lineGapHalf)
                 if (deltaY > lineGapHalf) {
                     deltaY -= lineGapHalf
                 }
@@ -25,29 +25,54 @@ class InputHandler(val state: GameState) {
                 val poinGap = RenderOptions.pointRaster.toInt()
                 val poinGapHalf = (RenderOptions.pointRaster / 2).toInt()
 
-                var width = Gdx.graphics.width
                 var deltaX = Math.abs(Math.floorMod((x), poinGap) - poinGapHalf)
                 val point = (x / poinGap)
                 if (deltaX > lineGapHalf) {
                     deltaX -= lineGapHalf
                 }
                 if (deltaX <= maxTouchDistance && deltaY <= maxTouchDistance) {
-                    addHackPoint(line, point)
+                    addHackPoint(line, point, button)
                 }
 
-                return true // return true to indicate the event was handled
+                return true
             }
 
             override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean {
-                // your touch up code here
-                return true // return true to indicate the event was handled
+
+                return true
             }
         }
     }
 
-    private fun addHackPoint(line: Int, point: Int) {
+    private fun addHackPoint(line: Int, point: Int, button: Int) {
         val baseLine = state.lines[line]
-        baseLine.hackPoints.add(GameState.HackPoint(point, baseLine))
+        val existing = baseLine.hackPoints.find { it.i == point }
+        if (existing != null) {
+            if (button == 0 && existing.state == GameState.HackPoint.State.Line) {
+                selectLine(existing)
+            } else
+                if (button == 0) {
+                    existing.alliance = existing.alliance.next()
+                } else {
+                    existing.state = existing.state.next()
+                }
+        } else {
+            baseLine.hackPoints.add(GameState.HackPoint(point, baseLine))
+        }
+    }
+
+    private fun selectLine(existing: GameState.HackPoint) {
+        if (existing.seleced) {
+            state.selectedLine = null
+        } else if (state.selectedLine != null) {
+            state.connections.add(GameState.Connection(state.selectedLine!!, existing))
+            state.selectedLine!!.seleced = false
+            state.selectedLine = null
+        } else {
+            state.selectedLine = existing
+            existing.seleced = true
+            existing.alliance = GameState.Alliance.Neutral
+        }
     }
 
 }
