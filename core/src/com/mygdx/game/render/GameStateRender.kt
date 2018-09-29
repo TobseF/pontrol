@@ -11,7 +11,7 @@ import com.mygdx.game.GameState.BaseLine
 class GameStateRender {
     private var height = Gdx.graphics.height.toFloat()
     private var width = Gdx.graphics.width.toFloat()
-    private var pointRaster = 80F
+    private var pointRaster = RenderOptions.pointRaster
 
     private val renderer = ShapeRenderer()
     private lateinit var state: GameState
@@ -69,7 +69,7 @@ class GameStateRender {
     }
 
     private fun drawHackPoint(hackPoint: GameState.HackPoint, y: Float) {
-        val x = pointRaster * hackPoint.i
+        val x = (pointRaster * hackPoint.i) + (pointRaster / 2)
         val radius = 8F
         renderCircle(x, y, radius)
     }

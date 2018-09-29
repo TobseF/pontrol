@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.render.EnemyStep
 import com.mygdx.game.render.GameStateRender
+import com.mygdx.game.render.InputHandler
 
 class MyGdxGame : ApplicationAdapter() {
     private lateinit var batch: SpriteBatch
@@ -17,8 +18,7 @@ class MyGdxGame : ApplicationAdapter() {
     private lateinit var state: GameState
     private lateinit var renderer: GameStateRender
     private lateinit var enemy: EnemyStep
-
-
+    private lateinit var input: InputHandler
 
     override fun create() {
         batch = SpriteBatch()
@@ -29,6 +29,7 @@ class MyGdxGame : ApplicationAdapter() {
         line.hackPoints.add(GameState.HackPoint(5, line))
         renderer = GameStateRender()
         enemy = EnemyStep()
+        input = InputHandler(state)
     }
 
     override fun render() {
