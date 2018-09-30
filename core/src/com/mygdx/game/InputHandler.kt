@@ -14,7 +14,7 @@ class InputHandler(val state: GameState, val enemyStep: EnemyStep) {
 
             override fun keyTyped(character: Char): Boolean {
                 if (character == 'v') {
-                    enemyStep.spwanVirus()
+                    // enemyStep.spwanVirus()
                 }
                 return true
             }

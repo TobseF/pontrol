@@ -22,7 +22,7 @@ class MyGdxGame : ApplicationAdapter() {
         state = GameState()
         initGameState()
         renderer = GameStateRender(state)
-        enemy = EnemyStep()
+        enemy = EnemyStep(state)
         input = InputHandler(state, enemy)
     }
 

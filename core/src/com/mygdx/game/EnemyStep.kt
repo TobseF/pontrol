@@ -1,19 +1,15 @@
 package com.mygdx.game
 
 import com.badlogic.gdx.Gdx
-import com.mygdx.game.GameState.GridPoint
 import com.mygdx.game.GameState.HackPoint.State.*
 import com.mygdx.game.GameState.Virus
-import java.util.*
 
-class EnemyStep {
-
-    private lateinit var state: GameState
+class EnemyStep(val state: GameState) {
+    val virusFacotry = VirusFactory(state)
 
     fun step(state: GameState) {
-        this.state = state
         if (state.viruses.size == 0) {
-            spwanVirus(1)
+            virusFacotry.spwanVirus()
         }
         val step = GameOption.enemySpeed
         val killed = arrayListOf<Virus>()
@@ -63,40 +59,17 @@ class EnemyStep {
             }
         }
         state.viruses.removeAll(killed)
-        val lines = Array(state.size()) { it }.toMutableList().apply { shuffle() }
 
         if (killed.isNotEmpty()) {
-            for (i in 0..Math.min(lines.size - 1, killed.size)) {
-                spwanVirus(lines[i])
-            }
+            virusFacotry.killedVirus(killed.size)
+
         }
+        virusFacotry.step()
     }
 
-    fun spwanVirus(line: Int) {
-        state.viruses.add(newVirus(line))
-    }
 
-    fun spwanVirus() {
-        spwanVirus(state.lines.random().i)
-        //spwanVirus(1)
-    }
 
     private fun deltaTime() = Gdx.graphics.deltaTime
 
-    private fun newVirus(lineNumber: Int): Virus {
-        val line = state.lines[lineNumber]
-        val a = GridPoint(0, line)
-        val b = GridPoint(1, line)
-        return Virus(randomAlliance(), a, b)
-    }
 
-    fun Array<GameState.BaseLine>.random() = this[(0 until this.size).random()]
-
-    private fun IntRange.random() =
-            Random().nextInt((endInclusive + 1) - start) + start
-
-
-    private fun randomAlliance(): GameState.Alliance {
-        return GameState.Alliance.values()[(0 until 4).random()]
-    }
 }
