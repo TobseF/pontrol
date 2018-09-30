@@ -2,7 +2,7 @@
 
 ## 🚧 Work in progress
 
-My submission for the Z10 Game Jam 2018.
+My submission for the Z10 Game Jam 2018.  
 👍 A big thank you to Alex, for the organisation.
 
 ### Story
@@ -16,8 +16,8 @@ Left mouse: Hack a network node and place a *Block*. Click to change its
 color. Select two **Line** nodes to connect them.
 Right mouse: Change the hacked node type.
 
-**Block**: Block an incoming package with the same color
-**Transform**: Changes the color of an incoming package.
+**Block**: Block an incoming package with the same color  
+**Transform**: Changes the color of an incoming package.  
 **Line**: Used to build connections which transfer packages between
 two data lines. First build **Line**-1 and **Line**-2 and select them,
 to build a connection.
