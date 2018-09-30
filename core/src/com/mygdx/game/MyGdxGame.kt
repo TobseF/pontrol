@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.mygdx.game.GameState.HackPoint
+import com.mygdx.game.GameState.HackPoint.State.Line
 import com.mygdx.game.render.EnemyStep
 import com.mygdx.game.render.GameStateRender
 import com.mygdx.game.render.InputHandler
@@ -23,12 +25,20 @@ class MyGdxGame : ApplicationAdapter() {
         batch = SpriteBatch()
         img = Texture("toast.png")
         state = GameState()
-        val line = state.lines[1]
-        line.hackPoints.add(GameState.HackPoint(3, line))
-        line.hackPoints.add(GameState.HackPoint(5, line))
+        initGameState()
         renderer = GameStateRender(state)
         enemy = EnemyStep()
         input = InputHandler(state, enemy)
+    }
+
+    private fun initGameState() {
+        val line1 = state.lines[1]
+        val line2 = state.lines[0]
+        val point1 = HackPoint(1, line1, Line)
+        line1.hackPoints.add(point1)
+        val point2 = HackPoint(1, line2, Line)
+        line2.hackPoints.add(point2)
+        state.connections.add(GameState.Connection(point2, point1))
     }
 
     override fun render() {

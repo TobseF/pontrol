@@ -31,25 +31,47 @@ class GameStateRender(val state: GameState) {
 
         renderer.begin(ShapeRenderer.ShapeType.Filled)
 
+        renderLines(state)
+        renderConnections(state)
+        renderViruses(state)
+
+        renderer.end()
+    }
+
+    private fun renderLines(state: GameState) {
         var y = lineGap / 2
         for (line in state.lines) {
             drawLine(line, y)
             y += lineGap
         }
+    }
+
+    private fun renderViruses(state: GameState) {
         for (virus in state.viruses) {
             renderer.color = virus.alliance.toColor()
-            var x = (virus.current.i * pointRaster) - (pointRaster / 2)
-            val y = virus.current.line.i * lineGap + (lineGap / 2)
-            x += virus.stepProgress * pointRaster
-            renderCircle(x, y, 12F)
-
+            if (virus.isOnConnection()) {
+                var x = (virus.current.i * pointRaster) + (pointRaster / 2)
+                val y = virus.current.line.i * lineGap + (lineGap / 2)
+                var connectionD = virus.distanceLine() * lineGap
+                if (virus.current.line.i > virus.next.line.i) {
+                    connectionD = -connectionD
+                }
+                val yD = virus.stepProgress * connectionD
+                renderCircle(x, y + yD, 12F)
+            } else {
+                var x = (virus.current.i * pointRaster) + (pointRaster / 2)
+                val y = virus.current.line.i * lineGap + (lineGap / 2)
+                x += virus.stepProgress * pointRaster
+                renderCircle(x, y, 12F)
+            }
         }
+    }
+
+    private fun renderConnections(state: GameState) {
         for (connection in state.connections) {
             renderer.color = GameColor.neutral
             renderer.rectLine(connection.a.toVec(), connection.b.toVec(), 5F)
         }
-
-        renderer.end()
     }
 
     private fun HackPoint.toVec(): Vector2 {
@@ -63,6 +85,7 @@ class GameStateRender(val state: GameState) {
             Alliance.Red -> Color.RED
             Alliance.Blue -> Color.BLUE
             Alliance.Green -> Color.GREEN
+            Alliance.Yellow -> Color.YELLOW
         }
     }
 
@@ -97,11 +120,11 @@ class GameStateRender(val state: GameState) {
         }
     }
 
-    fun renderCircle(x: Float, y: Float, radius: Float) {
+    private fun renderCircle(x: Float, y: Float, radius: Float) {
         renderer.circle(state.position + x, y, radius)
     }
 
-    fun renderHackPointLine(x: Float, y: Float) {
+    private fun renderHackPointLine(x: Float, y: Float) {
         val height = 32F
         val width = 12F
         val dX = width / 2
@@ -109,13 +132,13 @@ class GameStateRender(val state: GameState) {
         renderer.rect(state.position + x - dX, y - dY, width, height)
     }
 
-    fun renderHackPointChange(x: Float, y: Float) {
+    private fun renderHackPointChange(x: Float, y: Float) {
         val side = 26F
         val dY = side / 2
         renderer.rect(state.position + x, y - dY - 6, 0f, 0F, side, side, 1F, 1F, 45F)
     }
 
-    fun renderBlocked(x: Float, y: Float) {
+    private fun renderBlocked(x: Float, y: Float) {
         val height = 28F
         val width = 28F
         val dX = width / 2

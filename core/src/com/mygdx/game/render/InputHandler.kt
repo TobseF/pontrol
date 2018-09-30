@@ -60,7 +60,7 @@ class InputHandler(val state: GameState, val enemyStep: EnemyStep) {
                 selectLine(existing)
             } else
                 if (button == 0) {
-                    existing.alliance = existing.alliance.next()
+                    existing.alliance = existing.alliance.nextEnemy()
                 } else {
                     existing.state = existing.state.next()
                 }
@@ -69,17 +69,27 @@ class InputHandler(val state: GameState, val enemyStep: EnemyStep) {
         }
     }
 
-    private fun selectLine(existing: GameState.HackPoint) {
-        if (existing.seleced) {
+    private fun selectLine(secondPoint: GameState.HackPoint) {
+        if (secondPoint.seleced) {
             state.selectedLine?.seleced = false
             state.selectedLine = null
         } else if (state.selectedLine != null) {
-            state.connections.add(GameState.Connection(state.selectedLine!!, existing))
-            state.selectedLine!!.seleced = false
-            state.selectedLine = null
+            val firstPoint = state.selectedLine!!
+
+            if (firstPoint.i == secondPoint.i) {
+                // Make connection
+                val connection = GameState.Connection(firstPoint, secondPoint)
+                firstPoint.seleced = false
+                state.connections.add(connection)
+                state.selectedLine = null
+            } else {
+                state.selectedLine = secondPoint
+                firstPoint.seleced = false
+                secondPoint.seleced = true
+            }
         } else {
-            state.selectedLine = existing
-            existing.seleced = true
+            state.selectedLine = secondPoint
+            secondPoint.seleced = true
         }
     }
 
