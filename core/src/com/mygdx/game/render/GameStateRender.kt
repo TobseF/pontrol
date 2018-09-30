@@ -13,7 +13,8 @@ import com.mygdx.game.GameState.*
 import com.mygdx.game.GameState.HackPoint.State.*
 
 
-class GameStateRender(val state: GameState) {
+class GameStateRender(private val state: GameState) {
+
     private var height = Gdx.graphics.height.toFloat()
     private var width = Gdx.graphics.width.toFloat()
     private var pointRaster = RenderOptions.pointRaster
@@ -42,7 +43,7 @@ class GameStateRender(val state: GameState) {
         }
     }
 
-    fun updateSize() {
+    private fun updateSize() {
         height = Gdx.graphics.height.toFloat()
         width = Gdx.graphics.width.toFloat()
     }
@@ -112,7 +113,7 @@ class GameStateRender(val state: GameState) {
         for (virus in state.viruses) {
             renderer.color = virus.alliance.toColor()
             if (virus.isOnConnection()) {
-                var x = (virus.current.i * pointRaster) + (pointRaster / 2)
+                val x = (virus.current.i * pointRaster) + (pointRaster / 2)
                 val y = virus.current.line.i * lineGap + (lineGap / 2)
                 var connectionD = virus.distanceLine() * lineGap
                 if (virus.current.line.i > virus.next.line.i) {
@@ -201,11 +202,9 @@ class GameStateRender(val state: GameState) {
     }
 
     private fun renderBlocked(x: Float, y: Float) {
-        val height = 28F
         val width = 28F
-        val dX = width / 2
-        val dY = height / 2
-        renderer.rect(state.position + x - dX, y - dY, width, height)
+        val d = width / 2
+        renderer.rect(state.position + x - d, y - d, width, width)
     }
 
 }

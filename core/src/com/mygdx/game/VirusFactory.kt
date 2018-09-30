@@ -12,7 +12,7 @@ class VirusFactory(val state: GameState) {
 
     private var time = 0F
     private var nextVirus = 6F
-    var killedTracker = 0
+    private var killedTracker = 0
 
     private val timeOuts = FloatArray(state.size(), { 0F })
 
@@ -28,7 +28,7 @@ class VirusFactory(val state: GameState) {
             timeOuts[i] = timeOuts[i] + deltaTime()
         }
         if (time >= nextVirus) {
-            spwanVirus()
+            spawnVirus()
 
             nextVirus = ((nextVirusMax * Math.random()) + nextVirusMin).toFloat()
             time = 0F
@@ -43,12 +43,12 @@ class VirusFactory(val state: GameState) {
         }
         val lines = Array(state.size()) { it }.toMutableList().apply { shuffle() }
         for (i in 0..Math.min(lines.size - 1, killed)) {
-            //spwanVirus()
+            //spawnVirus()
         }
     }
 
 
-    fun spwanVirus() {
+    fun spawnVirus() {
         val newVirus = newVirus()
         if (newVirus != null) {
             timeOuts[newVirus.current.line.i] = 0F
@@ -57,8 +57,7 @@ class VirusFactory(val state: GameState) {
     }
 
     private fun newVirus(): GameState.Virus? {
-
-        var rows = mutableListOf<Int>()
+        val rows = mutableListOf<Int>()
         for (i in 0 until timeOuts.size) {
             val timeout = timeOuts[i]
             if (timeout >= nextVirusMin) {

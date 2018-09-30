@@ -5,11 +5,11 @@ import com.mygdx.game.GameState.HackPoint.State.*
 import com.mygdx.game.GameState.Virus
 
 class EnemyStep(val state: GameState) {
-    val virusFacotry = VirusFactory(state)
+    val virusFactory = VirusFactory(state)
 
     fun step(state: GameState) {
         if (state.viruses.size == 0) {
-            virusFacotry.spwanVirus()
+            virusFactory.spawnVirus()
         }
         val step = GameOption.enemySpeed
         val killed = arrayListOf<Virus>()
@@ -61,15 +61,12 @@ class EnemyStep(val state: GameState) {
         state.viruses.removeAll(killed)
 
         if (killed.isNotEmpty()) {
-            virusFacotry.killedVirus(killed.size)
+            virusFactory.killedVirus(killed.size)
 
         }
-        virusFacotry.step()
+        virusFactory.step()
     }
 
 
-
     private fun deltaTime() = Gdx.graphics.deltaTime
-
-
 }
