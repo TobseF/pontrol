@@ -54,6 +54,10 @@ class EnemyStep {
                             state.points++
                         } else {
                             state.lives--
+                            if (state.lives <= 0) {
+                                state.lives = 0
+                                println("Game Over")
+                            }
                         }
                     }
                 }
@@ -94,6 +98,6 @@ class EnemyStep {
 
 
     private fun randomAlliance(): GameState.Alliance {
-        return GameState.Alliance.values()[(0 until 3).random()]
+        return GameState.Alliance.values()[(0 until 4).random()]
     }
 }

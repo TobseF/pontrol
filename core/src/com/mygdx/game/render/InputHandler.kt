@@ -75,8 +75,14 @@ class InputHandler(val state: GameState, val enemyStep: EnemyStep) {
             state.selectedLine = null
         } else if (state.selectedLine != null) {
             val firstPoint = state.selectedLine!!
-
-            if (firstPoint.i == secondPoint.i) {
+            if (secondPoint.isConnected()) {
+                state.connections.remove(secondPoint.connection)
+                state.selectedLine = null
+                firstPoint.seleced = false
+                firstPoint.connection = null
+                secondPoint.connection = null
+                secondPoint.seleced = false
+            } else if (firstPoint.i == secondPoint.i) {
                 // Make connection
                 val connection = GameState.Connection(firstPoint, secondPoint)
                 firstPoint.seleced = false
@@ -87,7 +93,7 @@ class InputHandler(val state: GameState, val enemyStep: EnemyStep) {
                 firstPoint.seleced = false
                 secondPoint.seleced = true
             }
-        } else if (!secondPoint.isConnected()) {
+        } else {
             state.selectedLine = secondPoint
             secondPoint.seleced = true
         }
