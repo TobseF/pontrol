@@ -1,8 +1,8 @@
-package com.mygdx.game.render
+package com.mygdx.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.InputAdapter
-import com.mygdx.game.GameState
+import com.mygdx.game.render.RenderOptions
 
 
 class InputHandler(val state: GameState, val enemyStep: EnemyStep) {

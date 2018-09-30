@@ -1,7 +1,6 @@
-package com.mygdx.game.render
+package com.mygdx.game
 
 import com.badlogic.gdx.Gdx
-import com.mygdx.game.GameState
 import com.mygdx.game.GameState.GridPoint
 import com.mygdx.game.GameState.HackPoint.State.*
 import com.mygdx.game.GameState.Virus
@@ -16,7 +15,7 @@ class EnemyStep {
         if (state.viruses.size == 0) {
             spwanVirus(1)
         }
-        val step = 1 / 3F // step per second
+        val step = GameOption.enemySpeed
         val killed = arrayListOf<Virus>()
         for (virus in state.viruses) {
             virus.stepProgress += (step * deltaTime())

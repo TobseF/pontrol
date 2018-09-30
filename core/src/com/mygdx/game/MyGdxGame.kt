@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.mygdx.game.GameState.HackPoint
 import com.mygdx.game.GameState.HackPoint.State.Line
-import com.mygdx.game.render.EnemyStep
 import com.mygdx.game.render.GameStateRender
-import com.mygdx.game.render.InputHandler
 
 class MyGdxGame : ApplicationAdapter() {
     private lateinit var batch: SpriteBatch
@@ -40,8 +38,9 @@ class MyGdxGame : ApplicationAdapter() {
 
     override fun render() {
         clearScreen()
-
-        enemy.step(state)
+        if (state.lives > 0) {
+            enemy.step(state)
+        }
 
         renderer.render(state)
 

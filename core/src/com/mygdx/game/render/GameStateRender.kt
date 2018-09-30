@@ -2,9 +2,11 @@ package com.mygdx.game.render
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.GameState
 import com.mygdx.game.GameState.*
@@ -20,19 +22,23 @@ class GameStateRender(val state: GameState) {
     private val renderer = ShapeRenderer()
 
     private val batch = SpriteBatch()
-    private val font: BitmapFont
+    private val scoreFont: BitmapFont
+    private val defaultFont: BitmapFont
 
     init {
-        font = BitmapFont(Gdx.files.internal("segment7.fnt"), false)
+        scoreFont = BitmapFont(Gdx.files.internal("segment7.fnt"), false)
+        defaultFont = BitmapFont(Gdx.files.internal("sans.fnt"), false)
     }
 
     object GameColor {
         val neutral = Color.LIGHT_GRAY!!
         val selected = Color.YELLOW!!
         val end = Color.RED.cpy()!!
+        val shadow = Color.BLACK.cpy()!!
 
         init {
             end.a = 0.6F
+            shadow.a = 0.7F
         }
     }
 
@@ -44,18 +50,47 @@ class GameStateRender(val state: GameState) {
     fun render(state: GameState) {
         updateSize()
 
-        renderer.begin(ShapeRenderer.ShapeType.Filled)
+        renderer.begin(Filled)
+        renderer.setAutoShapeType(true)
 
         renderLines(state)
         renderConnections(state)
         renderViruses(state)
         renderEnd(state)
+        renderer.end()
 
         batch.begin()
-        font.draw(batch, "${state.lives} ${state.points}", width - 300, height - 80)
+        renderScore(state)
         batch.end()
 
-        renderer.end()
+        renderGameOver()
+
+    }
+
+    private fun renderGameOver() {
+        if (state.lives == 0) {
+            reenableAlpha()
+            renderer.apply {
+                begin(Filled)
+                color = GameColor.shadow
+                rect(0F, 0F, width, height)
+                end()
+            }
+            batch.begin()
+            defaultFont.draw(batch, "GAME OVER", width / 2 - 300, height / 2 + 100)
+            defaultFont.draw(batch, "Score: " + state.points, width / 2 - 305, height / 2 - 50)
+            batch.end()
+        }
+    }
+
+    private fun reenableAlpha() {
+        Gdx.gl.glEnable(GL20.GL_BLEND)
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+    }
+
+    private fun renderScore(state: GameState) {
+        scoreFont.draw(batch, "${state.lives} ${state.points}", width - 300, height - 80)
+
     }
 
     private fun renderEnd(state: GameState) {
@@ -89,7 +124,7 @@ class GameStateRender(val state: GameState) {
                 var x = (virus.current.i * pointRaster) + (pointRaster / 2)
                 val y = virus.current.line.i * lineGap + (lineGap / 2)
                 x += virus.stepProgress * pointRaster
-                renderCircle(x, y, 12F)
+                renderCircle(x, y, RenderOptions.virusRadius)
             }
         }
     }
