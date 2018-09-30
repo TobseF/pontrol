@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.mygdx.game.GameState.HackPoint
@@ -15,7 +14,6 @@ import com.mygdx.game.render.InputHandler
 
 class MyGdxGame : ApplicationAdapter() {
     private lateinit var batch: SpriteBatch
-    private lateinit var img: Texture
     private lateinit var state: GameState
     private lateinit var renderer: GameStateRender
     private lateinit var enemy: EnemyStep
@@ -23,7 +21,6 @@ class MyGdxGame : ApplicationAdapter() {
 
     override fun create() {
         batch = SpriteBatch()
-        img = Texture("toast.png")
         state = GameState()
         initGameState()
         renderer = GameStateRender(state)
@@ -42,15 +39,11 @@ class MyGdxGame : ApplicationAdapter() {
     }
 
     override fun render() {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        batch.begin()
-        //batch.draw(img, 0f, 0f)
-        batch.end()
+        clearScreen()
+
         enemy.step(state)
 
-
         renderer.render(state)
-
 
         val shapeRenderer = ShapeRenderer()
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
@@ -58,8 +51,17 @@ class MyGdxGame : ApplicationAdapter() {
         shapeRenderer.end()
     }
 
+    private fun clearScreen() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        enableAlpha()
+    }
+
+    private fun enableAlpha() {
+        Gdx.gl.glEnable(GL20.GL_BLEND)
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+    }
+
     override fun dispose() {
         batch.dispose()
-        img.dispose()
     }
 }

@@ -2,11 +2,14 @@ package com.mygdx.game.render
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.mygdx.game.GameState
 import com.mygdx.game.GameState.*
 import com.mygdx.game.GameState.HackPoint.State.*
+
 
 class GameStateRender(val state: GameState) {
     private var height = Gdx.graphics.height.toFloat()
@@ -16,9 +19,21 @@ class GameStateRender(val state: GameState) {
 
     private val renderer = ShapeRenderer()
 
+    private val batch = SpriteBatch()
+    private val font: BitmapFont
+
+    init {
+        font = BitmapFont(Gdx.files.internal("segment7.fnt"), false)
+    }
+
     object GameColor {
         val neutral = Color.LIGHT_GRAY!!
         val selected = Color.YELLOW!!
+        val end = Color.RED.cpy()!!
+
+        init {
+            end.a = 0.6F
+        }
     }
 
     fun updateSize() {
@@ -34,8 +49,20 @@ class GameStateRender(val state: GameState) {
         renderLines(state)
         renderConnections(state)
         renderViruses(state)
+        renderEnd(state)
+
+        batch.begin()
+        font.draw(batch, "${state.lives} ${state.points}", width - 300, height - 80)
+        batch.end()
 
         renderer.end()
+    }
+
+    private fun renderEnd(state: GameState) {
+        val margin = 15F
+        val y = (state.end * pointRaster) + (pointRaster / 2)
+        renderer.color = GameColor.end
+        renderer.rectLine(Vector2(y, margin), Vector2(y, height - margin), 12F)
     }
 
     private fun renderLines(state: GameState) {

@@ -3,7 +3,9 @@ package com.mygdx.game
 import com.mygdx.game.GameState.HackPoint.State.Blocked
 
 class GameState {
-    var lives = 0
+    var lives = 3
+    var points = 0
+    var end = 15
     var position = 0f
     val lines: Array<BaseLine>
     val connections = arrayListOf<Connection>()
@@ -29,6 +31,8 @@ class GameState {
     data class Virus(var alliance: Alliance, val current: GridPoint, val next: GridPoint) {
         var stepProgress = 0F
         val visited = arrayListOf<GridPoint>()
+
+        fun isFriendly() = alliance == Alliance.Yellow
 
         init {
             visited.add(current)

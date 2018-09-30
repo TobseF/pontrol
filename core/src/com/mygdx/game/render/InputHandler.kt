@@ -87,7 +87,7 @@ class InputHandler(val state: GameState, val enemyStep: EnemyStep) {
                 firstPoint.seleced = false
                 secondPoint.seleced = true
             }
-        } else {
+        } else if (!secondPoint.isConnected()) {
             state.selectedLine = secondPoint
             secondPoint.seleced = true
         }

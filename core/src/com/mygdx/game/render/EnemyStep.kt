@@ -10,6 +10,7 @@ import java.util.*
 class EnemyStep {
 
     private lateinit var state: GameState
+
     fun step(state: GameState) {
         this.state = state
         if (state.viruses.size == 0) {
@@ -47,6 +48,14 @@ class EnemyStep {
                 if (followLine) {
                     virus.current.i = virus.current.i + 1
                     virus.next.i = virus.next.i + 1
+                    if (virus.current.i == state.end) {
+                        killed.add(virus)
+                        if (virus.isFriendly()) {
+                            state.points++
+                        } else {
+                            state.lives--
+                        }
+                    }
                 }
             }
         }
